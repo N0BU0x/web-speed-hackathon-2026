@@ -67,9 +67,7 @@ const config = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      $: "jquery",
       Buffer: ["buffer", "Buffer"],
-      "window.jQuery": "jquery",
     }),
     new webpack.EnvironmentPlugin({
       BUILD_DATE: new Date().toISOString(),
