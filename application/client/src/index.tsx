@@ -23,12 +23,11 @@ if (typeof HTMLButtonElement !== "undefined" && !("commandForElement" in HTMLBut
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  createRoot(document.getElementById("app")!).render(
-    <Provider store={store}>
-      <BrowserRouter>
-        <AppContainer />
-      </BrowserRouter>
-    </Provider>,
-  );
-});
+// defer属性付きのため DOMContentLoaded 不要 - 即座にレンダリング開始
+createRoot(document.getElementById("app")!).render(
+  <Provider store={store}>
+    <BrowserRouter>
+      <AppContainer />
+    </BrowserRouter>
+  </Provider>,
+);
