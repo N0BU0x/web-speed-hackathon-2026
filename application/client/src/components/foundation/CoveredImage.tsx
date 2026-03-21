@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useEffect, useId, useState } from "react";
+import { MouseEvent, useCallback, useId, useState } from "react";
 
 import { Button } from "@web-speed-hackathon-2026/client/src/components/foundation/Button";
 import { Modal } from "@web-speed-hackathon-2026/client/src/components/modal/Modal";
@@ -19,33 +19,32 @@ export const CoveredImage = ({ src }: Props) => {
   }, []);
 
   const [alt, setAlt] = useState("");
+  const [altLoaded, setAltLoaded] = useState(false);
 
-  // ALT テキストを EXIF から非同期で取得
-  useEffect(() => {
-    let cancelled = false;
-    fetchBinary(src).then(async (data) => {
-      if (cancelled) return;
-      try {
-        const { load, ImageIFD } = await import("piexifjs");
-        const arr = new Uint8Array(data);
-        let binary = "";
-        for (let i = 0; i < arr.length; i++) {
-          binary += String.fromCharCode(arr[i]!);
-        }
-        const exif = load(binary);
-        const raw = exif?.["0th"]?.[ImageIFD.ImageDescription];
-        if (raw != null) {
-          const decoded = new TextDecoder().decode(
-            Uint8Array.from(raw as string, (c: string) => c.charCodeAt(0)),
-          );
-          if (!cancelled) setAlt(decoded);
-        }
-      } catch {
-        // EXIF 読み取り失敗は無視
+  // ALT テキストを EXIF からオンデマンドで取得（ボタンクリック時のみ）
+  const loadAlt = useCallback(async () => {
+    if (altLoaded) return;
+    setAltLoaded(true);
+    try {
+      const data = await fetchBinary(src);
+      const { load, ImageIFD } = await import("piexifjs");
+      const arr = new Uint8Array(data);
+      let binary = "";
+      for (let i = 0; i < arr.length; i++) {
+        binary += String.fromCharCode(arr[i]!);
       }
-    });
-    return () => { cancelled = true; };
-  }, [src]);
+      const exif = load(binary);
+      const raw = exif?.["0th"]?.[ImageIFD.ImageDescription];
+      if (raw != null) {
+        const decoded = new TextDecoder().decode(
+          Uint8Array.from(raw as string, (c: string) => c.charCodeAt(0)),
+        );
+        setAlt(decoded);
+      }
+    } catch {
+      // EXIF 読み取り失敗は無視
+    }
+  }, [src, altLoaded]);
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -61,6 +60,7 @@ export const CoveredImage = ({ src }: Props) => {
         type="button"
         command="show-modal"
         commandfor={dialogId}
+        onClick={loadAlt}
       >
         ALT を表示する
       </button>
