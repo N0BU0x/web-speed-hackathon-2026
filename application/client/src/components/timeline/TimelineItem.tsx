@@ -1,6 +1,8 @@
 import { MouseEventHandler, useCallback } from "react";
 import { Link, useNavigate } from "react-router";
 
+const dateFormatter = new Intl.DateTimeFormat("ja", { year: "numeric", month: "long", day: "numeric" });
+
 import { ImageArea } from "@web-speed-hackathon-2026/client/src/components/post/ImageArea";
 import { MovieArea } from "@web-speed-hackathon-2026/client/src/components/post/MovieArea";
 import { SoundArea } from "@web-speed-hackathon-2026/client/src/components/post/SoundArea";
@@ -56,6 +58,7 @@ export const TimelineItem = ({ post }: Props) => {
             <img
               alt={post.user.profileImage.alt}
               src={getProfileImagePath(post.user.profileImage.id)}
+              loading="lazy"
             />
           </Link>
         </div>
@@ -76,7 +79,7 @@ export const TimelineItem = ({ post }: Props) => {
             <span className="text-cax-text-muted pr-1">-</span>
             <Link className="text-cax-text-muted pr-1 hover:underline" to={`/posts/${post.id}`}>
               <time dateTime={new Date(post.createdAt).toISOString()}>
-                {new Intl.DateTimeFormat("ja", { year: "numeric", month: "long", day: "numeric" }).format(new Date(post.createdAt))}
+                {dateFormatter.format(new Date(post.createdAt))}
               </time>
             </Link>
           </p>

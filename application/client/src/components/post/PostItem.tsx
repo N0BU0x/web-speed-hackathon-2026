@@ -1,4 +1,6 @@
 import { Link } from "@web-speed-hackathon-2026/client/src/components/foundation/Link";
+
+const dateFormatter = new Intl.DateTimeFormat("ja", { year: "numeric", month: "long", day: "numeric" });
 import { ImageArea } from "@web-speed-hackathon-2026/client/src/components/post/ImageArea";
 import { MovieArea } from "@web-speed-hackathon-2026/client/src/components/post/MovieArea";
 import { SoundArea } from "@web-speed-hackathon-2026/client/src/components/post/SoundArea";
@@ -22,6 +24,7 @@ export const PostItem = ({ post }: Props) => {
               <img
                 alt={post.user.profileImage.alt}
                 src={getProfileImagePath(post.user.profileImage.id)}
+                loading="lazy"
               />
             </Link>
           </div>
@@ -66,7 +69,7 @@ export const PostItem = ({ post }: Props) => {
           <p className="mt-2 text-sm sm:mt-4">
             <Link className="text-cax-text-muted hover:underline" to={`/posts/${post.id}`}>
               <time dateTime={new Date(post.createdAt).toISOString()}>
-                {new Intl.DateTimeFormat("ja", { year: "numeric", month: "long", day: "numeric" }).format(new Date(post.createdAt))}
+                {dateFormatter.format(new Date(post.createdAt))}
               </time>
             </Link>
           </p>
