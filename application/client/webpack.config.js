@@ -84,7 +84,8 @@ const config = {
       ],
     }),
     new HtmlWebpackPlugin({
-      inject: false,
+      inject: true,
+      scriptLoading: "defer",
       template: path.resolve(SRC_PATH, "./index.html"),
     }),
   ],
@@ -122,7 +123,9 @@ const config = {
   },
   optimization: {
     minimize: true,
-    splitChunks: false,
+    splitChunks: {
+      chunks: "all",
+    },
     concatenateModules: true,
     usedExports: true,
     providedExports: true,
