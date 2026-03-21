@@ -10,7 +10,7 @@ export const app = Express();
 
 app.set("trust proxy", true);
 
-app.use(compression());
+app.use(compression({ level: 9 }));
 
 // Session and body parsers only for API routes (skip for static files)
 app.use("/api/v1", sessionMiddleware, bodyParser.json(), bodyParser.raw({ limit: "10mb" }), apiRouter);
