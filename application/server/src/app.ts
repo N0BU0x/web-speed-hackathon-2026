@@ -12,9 +12,6 @@ app.set("trust proxy", true);
 
 app.use(compression());
 
-app.use(sessionMiddleware);
-app.use(bodyParser.json());
-app.use(bodyParser.raw({ limit: "10mb" }));
-
-app.use("/api/v1", apiRouter);
+// Session and body parsers only for API routes (skip for static files)
+app.use("/api/v1", sessionMiddleware, bodyParser.json(), bodyParser.raw({ limit: "10mb" }), apiRouter);
 app.use(staticRouter);
